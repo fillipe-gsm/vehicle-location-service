@@ -1,5 +1,5 @@
 import json
-from pathlib import Path, PosixPath
+from pathlib import Path
 
 from pydantic import BaseModel
 
@@ -24,13 +24,13 @@ class Database(BaseModel):
 
     vehicles_by_id: dict[str, Vehicle]
 
-    def save(self, file_name: PosixPath = DATABASE_DEFAULT_PATH) -> None:
+    def save(self, file_name: Path = DATABASE_DEFAULT_PATH) -> None:
         """Save data in a file"""
         with file_name.open("w", encoding="utf-8") as fb:
             json.dump(self.dict(), fb, indent=4)
 
     @classmethod
-    def load(cls, file_name: PosixPath = DATABASE_DEFAULT_PATH) -> "Database":
+    def load(cls, file_name: Path = DATABASE_DEFAULT_PATH) -> "Database":
         """Load database from file"""
         with file_name.open("r", encoding="utf-8") as fb:
             json_data = json.load(fb)
