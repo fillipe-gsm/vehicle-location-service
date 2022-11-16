@@ -51,3 +51,18 @@ def test_report_vehicle_location(
     expected_response = {"vehicle": {"vehicle_id": "0", "lat": 10, "lng": 10}}
 
     assert response.json == expected_response
+
+
+def test_get_closest_vehicles(
+    client_app, populate_test_database, mocked_database_path
+):
+    response = client_app.get(
+        "/closest-vehicles",
+        params={"origin_lat": 2, "origin_lng": 2, "radius": 5},
+    )
+
+    expected_response = {
+        "closest_vehicles": [{"vehicle_id": "2", "lat": 2, "lng": 2}]
+    }
+
+    assert response.json == expected_response
