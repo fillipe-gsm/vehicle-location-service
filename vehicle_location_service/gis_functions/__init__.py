@@ -1,2 +1,2 @@
-from .report_location import report_location
+from .report_location import report_new_location
 from .filter_close_vehicles import filter_close_vehicles

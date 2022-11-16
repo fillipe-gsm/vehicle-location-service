@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from vehicle_location_service.gis_functions import report_location
+from vehicle_location_service.gis_functions import report_new_location
 from vehicle_location_service.data_types import Database, Vehicle
 
 
@@ -36,7 +36,7 @@ def test_update_vehicle(
     expected_updated_vehicle = Vehicle(vehicle_id=vehicle_id, lat=10, lng=10)
 
     # When
-    updated_vehicle = report_location(
+    updated_vehicle = report_new_location(
         vehicle_id, 10, 10, database_file_name=database_file_name
     )
 

@@ -7,7 +7,7 @@ from vehicle_location_service.data_types import Database, Vehicle
 DATABASE_DEFAULT_PATH = Path().cwd() / settings.DATABASE_FILE
 
 
-def report_location(
+def report_new_location(
     vehicle_id: str,
     new_lat: float,
     new_lng: float,
@@ -18,6 +18,7 @@ def report_location(
     current vehicle or create a new one if it does not exist yet.
     """
 
+    import ipdb; ipdb.set_trace()
     database = Database.load(file_name=database_file_name)
 
     vehicle = database.vehicles_by_id.get(
