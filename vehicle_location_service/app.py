@@ -1,4 +1,6 @@
 """Entrypoint to expose the API endpoints"""
+from typing import Any
+
 from bottle import Bottle, request
 
 from vehicle_location_service.gis_functions import (
@@ -13,7 +15,7 @@ def create_app() -> Bottle:
     app = Bottle()
 
     @app.post("/vehicle")
-    def vehicle_location():
+    def vehicle_location() -> dict[str, Any]:
         vehicle_id = request.json["vehicle_id"]
         new_lat = request.json["lat"]
         new_lng = request.json["lng"]
@@ -23,7 +25,7 @@ def create_app() -> Bottle:
         return {"vehicle": updated_vehicle.dict()}
 
     @app.get("/closest-vehicles")
-    def closest_vehicles():
+    def closest_vehicles() -> dict[str, Any]:
         origin_lat = float(request.query.get("origin_lat"))
         origin_lng = float(request.query.get("origin_lng"))
         radius = float(request.query.get("radius"))
