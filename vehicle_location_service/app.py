@@ -15,6 +15,8 @@ def create_app() -> Bottle:
         new_lat = request.json["lat"]
         new_lng = request.json["lng"]
 
-        report_new_location(vehicle_id, new_lat, new_lng)
+        updated_vehicle = report_new_location(vehicle_id, new_lat, new_lng)
+
+        return {"vehicle": updated_vehicle.dict()}
 
     return app

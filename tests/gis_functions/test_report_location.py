@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+from mock import patch
 
 from vehicle_location_service.gis_functions import report_new_location
 from vehicle_location_service.data_types import Database, Vehicle
@@ -12,7 +13,16 @@ def database_file_name(tmp_path):
 
 
 @pytest.fixture
-def populate_test_database(database_file_name):
+def mocked_database_path(database_file_name):
+    with patch(
+        "vehicle_location_service.data_types.database.DATABASE_PATH",
+        database_file_name
+    ) as mocked_path:
+        yield mocked_path
+
+
+@pytest.fixture
+def populate_test_database(mocked_database_path):
     vehicles_by_id = {
         "0": Vehicle(vehicle_id="0", lat=0, lng=0),
         "1": Vehicle(vehicle_id="1", lat=1, lng=1),
@@ -22,12 +32,12 @@ def populate_test_database(database_file_name):
     }
 
     database = Database(vehicles_by_id=vehicles_by_id)
-    database.save(file_name=database_file_name)
+    database.save()
 
 
 @pytest.mark.parametrize("vehicle_id", ["0", "10"])
 def test_update_vehicle(
-    database_file_name, populate_test_database, vehicle_id
+    database_file_name, populate_test_database, mocked_database_path, vehicle_id
 ):
     """Id "0" represents an existing vehicle and "10" is from a new one
     In both cases the data should be properly updated
@@ -36,12 +46,10 @@ def test_update_vehicle(
     expected_updated_vehicle = Vehicle(vehicle_id=vehicle_id, lat=10, lng=10)
 
     # When
-    updated_vehicle = report_new_location(
-        vehicle_id, 10, 10, database_file_name=database_file_name
-    )
+    updated_vehicle = report_new_location(vehicle_id, 10, 10)
 
     # Then
-    database = Database.load(file_name=database_file_name)
+    database = Database.load()
     updated_vehicle_on_database = database.vehicles_by_id[vehicle_id]
 
     # Check the database was updated and it returned the updated vehicle

@@ -19,7 +19,16 @@ def database_file_name(tmp_path):
 
 
 @pytest.fixture
-def populate_test_database(database_file_name):
+def mocked_database_path(database_file_name):
+    with patch(
+        "vehicle_location_service.data_types.database.DATABASE_PATH",
+        database_file_name
+    ) as mocked_path:
+        yield mocked_path
+
+
+@pytest.fixture
+def populate_test_database(mocked_database_path):
     vehicles_by_id = {
         "0": Vehicle(vehicle_id="0", lat=0, lng=0),
         "1": Vehicle(vehicle_id="1", lat=1, lng=1),
@@ -29,18 +38,18 @@ def populate_test_database(database_file_name):
     }
 
     database = Database(vehicles_by_id=vehicles_by_id)
-    database.save(file_name=database_file_name)
-
-
-@pytest.fixture
-def mocked_report_new_location():
-    with patch("app.report_new_location") as mocked_call:
-        yield mocked_call
+    database.save()
 
 
 def test_report_vehicle_location(
-    client_app, populate_test_database, mocked_report_new_location
+    client_app, populate_test_database, mocked_database_path
 ):
     response = client_app.post_json(
         "/vehicle", params={"vehicle_id": "0", "lat": 10, "lng": 10}
     )
+
+    expected_response = {
+        'vehicle': {'vehicle_id': '0', 'lat': 10, 'lng': 10}
+    }
+
+    assert response.json == expected_response

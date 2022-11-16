@@ -7,7 +7,7 @@ from vehicle_location_service.data_types import Vehicle
 from config import settings
 
 
-DATABASE_DEFAULT_PATH = Path().cwd() / settings.DATABASE_FILE
+DATABASE_PATH = Path().cwd() / settings.DATABASE_FILE
 
 
 class Database(BaseModel):
@@ -25,26 +25,24 @@ class Database(BaseModel):
 
     vehicles_by_id: dict[str, Vehicle]
 
-    def save(self, file_name: Path = DATABASE_DEFAULT_PATH) -> None:
+    def save(self) -> None:
         """Save data in a file"""
-        with file_name.open("w", encoding="utf-8") as fb:
+        with DATABASE_PATH.open("w", encoding="utf-8") as fb:
             json.dump(self.dict(), fb, indent=4)
 
     @classmethod
-    def load(cls, file_name: Path = DATABASE_DEFAULT_PATH) -> "Database":
+    def load(cls) -> "Database":
         """Load database from file"""
-        with file_name.open("r", encoding="utf-8") as fb:
+        with DATABASE_PATH.open("r", encoding="utf-8") as fb:
             json_data = json.load(fb)
 
         return cls(**json_data)
 
-    def add(
-        self, vehicle: Vehicle, file_name: Path = DATABASE_DEFAULT_PATH
-    ) -> None:
+    def add(self, vehicle: Vehicle) -> None:
         """Add or update a vehicle in the database"""
 
         self.vehicles_by_id[vehicle.vehicle_id] = vehicle
-        self.save(file_name=file_name)
+        self.save()
 
     @property
     def vehicles(self) -> list[Vehicle]:

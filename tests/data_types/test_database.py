@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+from mock import patch
 
 from vehicle_location_service.data_types import Database, Vehicle
 
@@ -21,22 +22,44 @@ def vehicles_by_id():
     }
 
 
-def test_can_save_database(vehicles_by_id, database_file_name):
+@pytest.fixture
+def mocked_database_path(database_file_name):
+    with patch(
+        "vehicle_location_service.data_types.database.DATABASE_PATH",
+        database_file_name
+    ) as mocked_path:
+        yield mocked_path
+
+
+@pytest.fixture
+def mocked_database_path2():
+    """The database here exists in the file system"""
+    database_file_name = Path().cwd() / "tests/data/test_database.json"
+
+    with patch(
+        "vehicle_location_service.data_types.database.DATABASE_PATH",
+        database_file_name
+    ) as mocked_path:
+        yield mocked_path
+
+
+def test_can_save_database(
+    vehicles_by_id, database_file_name, mocked_database_path
+):
     """Check if database file is properly created"""
     # Given
     database = Database(vehicles_by_id=vehicles_by_id)
 
     # When
-    database.save(file_name=database_file_name)
+    database.save()
 
     # Then
     assert database_file_name.exists()
 
 
-def test_can_load_database():
+def test_can_load_database(mocked_database_path2):
     # Test database with 5 vehicles
-    database_file_name = Path().cwd() / "tests/data/test_database.json"
 
-    database = Database.load(file_name=database_file_name)
+    database = Database.load()
 
     assert len(database.vehicles_by_id) == 5
