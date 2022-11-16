@@ -4,9 +4,10 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from vehicle_location_service.data_types import Vehicle
+from config import settings
 
 
-DATABASE_DEFAULT_PATH = Path().cwd() / "data/database.json"
+DATABASE_DEFAULT_PATH = Path().cwd() / settings.DATABASE_FILE
 
 
 class Database(BaseModel):
@@ -36,3 +37,11 @@ class Database(BaseModel):
             json_data = json.load(fb)
 
         return cls(**json_data)
+
+    def add(
+        self, vehicle: Vehicle, file_name: Path = DATABASE_DEFAULT_PATH
+    ) -> None:
+        """Add or update a vehicle in the database"""
+
+        self.vehicles_by_id[vehicle.vehicle_id] = vehicle
+        self.save(file_name=file_name)
