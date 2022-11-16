@@ -2,7 +2,8 @@
 from bottle import Bottle, request
 
 from vehicle_location_service.gis_functions import (
-    report_new_location, filter_close_vehicles
+    report_new_location,
+    filter_close_vehicles,
 )
 
 
