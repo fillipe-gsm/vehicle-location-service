@@ -4,6 +4,7 @@ import pytest
 
 from vehicle_location_service.data_types import Database, Vehicle
 
+
 @pytest.fixture
 def database_file_name(tmp_path):
     return tmp_path / "test_database.json"

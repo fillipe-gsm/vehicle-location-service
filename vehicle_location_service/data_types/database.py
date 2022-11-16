@@ -21,6 +21,7 @@ class Database(BaseModel):
 
     wherein each vehicle data is provided via `Vehicle` class.
     """
+
     vehicles_by_id: dict[str, Vehicle]
 
     def save(self, file_name: PosixPath = DATABASE_DEFAULT_PATH) -> None:
