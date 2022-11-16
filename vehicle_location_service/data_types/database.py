@@ -45,3 +45,9 @@ class Database(BaseModel):
 
         self.vehicles_by_id[vehicle.vehicle_id] = vehicle
         self.save(file_name=file_name)
+
+    @property
+    def vehicles(self) -> list[Vehicle]:
+        """Return a list of all vehicles"""
+
+        return list(self.vehicles_by_id.values())
