@@ -2,8 +2,8 @@
 name = "vehicle-location-service"
 version = "0.1.0"
 description = ""
-authors = ["Fillipe Goulart <fillipe.mendes@loggi.com>"]
-readme = "README.md"
+authors = ["Fillipe Goulart <fillipe.gsm@tutanota.com>"]
+readme = "README.rst"
 packages = [{include = "vehicle_location_service"}]
 
 [tool.poetry.dependencies]
@@ -12,7 +12,6 @@ pydantic = "^1.10.2"
 dynaconf = "^3.1.11"
 numpy = "^1.23.4"
 bottle = "^0.12.23"
-peewee = "^3.15.4"
 waitress = "^2.1.2"
 
 
