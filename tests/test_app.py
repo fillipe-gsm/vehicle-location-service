@@ -22,7 +22,7 @@ def database_file_name(tmp_path):
 def mocked_database_path(database_file_name):
     with patch(
         "vehicle_location_service.data_types.database.DATABASE_PATH",
-        database_file_name
+        database_file_name,
     ) as mocked_path:
         yield mocked_path
 
@@ -48,8 +48,6 @@ def test_report_vehicle_location(
         "/vehicle", params={"vehicle_id": "0", "lat": 10, "lng": 10}
     )
 
-    expected_response = {
-        'vehicle': {'vehicle_id': '0', 'lat': 10, 'lng': 10}
-    }
+    expected_response = {"vehicle": {"vehicle_id": "0", "lat": 10, "lng": 10}}
 
     assert response.json == expected_response

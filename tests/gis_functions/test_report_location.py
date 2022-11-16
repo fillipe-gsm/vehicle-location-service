@@ -16,7 +16,7 @@ def database_file_name(tmp_path):
 def mocked_database_path(database_file_name):
     with patch(
         "vehicle_location_service.data_types.database.DATABASE_PATH",
-        database_file_name
+        database_file_name,
     ) as mocked_path:
         yield mocked_path
 
@@ -37,7 +37,10 @@ def populate_test_database(mocked_database_path):
 
 @pytest.mark.parametrize("vehicle_id", ["0", "10"])
 def test_update_vehicle(
-    database_file_name, populate_test_database, mocked_database_path, vehicle_id
+    database_file_name,
+    populate_test_database,
+    mocked_database_path,
+    vehicle_id,
 ):
     """Id "0" represents an existing vehicle and "10" is from a new one
     In both cases the data should be properly updated

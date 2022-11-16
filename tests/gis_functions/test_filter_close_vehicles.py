@@ -15,7 +15,7 @@ def database_file_name():
 def mocked_database_path(database_file_name):
     with patch(
         "vehicle_location_service.data_types.database.DATABASE_PATH",
-        database_file_name
+        database_file_name,
     ) as mocked_path:
         yield mocked_path
 

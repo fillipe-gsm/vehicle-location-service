@@ -37,6 +37,7 @@ def filter_close_vehicles(
     close_vehicles_mask = (distance_matrix <= radius).squeeze()
 
     return [
-        vehicle for i, vehicle in enumerate(database.vehicles)
+        vehicle
+        for i, vehicle in enumerate(database.vehicles)
         if close_vehicles_mask[i]
     ]

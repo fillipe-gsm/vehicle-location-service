@@ -3,7 +3,6 @@ from pathlib import Path
 from vehicle_location_service.data_types import Database, Vehicle
 
 
-
 def report_new_location(
     vehicle_id: str,
     new_lat: float,
