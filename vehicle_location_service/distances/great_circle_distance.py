@@ -2,8 +2,7 @@
 import numpy as np
 
 
-EARTH_RADIUS_METERS = 6_371_000
-METERS_TO_KM = 1_000
+EARTH_RADIUS_KM = 6_371
 
 
 def great_circle_distance_matrix(
@@ -54,4 +53,4 @@ def great_circle_distance_matrix(
         ),
     )
 
-    return EARTH_RADIUS_METERS * delta_sigma / METERS_TO_KM
+    return EARTH_RADIUS_KM * delta_sigma
