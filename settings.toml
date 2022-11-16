@@ -1,1 +1,2 @@
 DATABASE_FILE = "data/database.json"
+SERVER_PORT = 8000

@@ -2,8 +2,8 @@
     "vehicles_by_id": {
         "0": {
             "vehicle_id": "0",
-            "lat": 0.0,
-            "lng": 0.0
+            "lat": 2.56,
+            "lng": -2.34
         },
         "1": {
             "vehicle_id": "1",
@@ -24,6 +24,11 @@
             "vehicle_id": "4",
             "lat": 4.0,
             "lng": 4.0
+        },
+        "fdsfd": {
+            "vehicle_id": "fdsfd",
+            "lat": "2.56",
+            "lng": "-2.34"
         }
     }
 }

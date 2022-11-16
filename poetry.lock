@@ -547,7 +547,7 @@ python-versions = ">=3.7"
 name = "waitress"
 version = "2.1.2"
 description = "Waitress WSGI server"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7.0"
 
@@ -595,7 +595,7 @@ tests = ["PasteDeploy", "WSGIProxy2", "coverage", "pyquery", "pytest", "pytest-c
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "bc5b81758bb994df008b8d65bfb47d24041907211f9aa59b0c26e7fc3d912539"
+content-hash = "8a69bd02e835f0e08595313b6a7d9f4f02b50d0f4259c60649a9a5f2e8b7a0c2"
 
 [metadata.files]
 appnope = [

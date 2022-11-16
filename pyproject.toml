@@ -13,6 +13,7 @@ dynaconf = "^3.1.11"
 numpy = "^1.23.4"
 bottle = "^0.12.23"
 peewee = "^3.15.4"
+waitress = "^2.1.2"
 
 
 [tool.poetry.group.dev.dependencies]
