@@ -17,14 +17,28 @@ def create_app() -> Bottle:
     app = Bottle()
 
     @app.post("/vehicle")
-    def vehicle_location() -> dict[str, Any]:
+    def add_vehicle_location() -> dict[str, Any]:
+        new_lat = float(request.json["lat"])
+        new_lng = float(request.json["lng"])
+
+        updated_vehicle = report_new_location(
+            new_lat=new_lat,
+            new_lng=new_lng,
+        ).dict()
+
+        return {"vehicle": updated_vehicle}
+
+    @app.put("/vehicle")
+    def update_vehicle_location() -> dict[str, Any]:
         vehicle_id = int(request.json["vehicle_id"])
         new_lat = float(request.json["lat"])
         new_lng = float(request.json["lng"])
 
         try:
             updated_vehicle = report_new_location(
-                vehicle_id, new_lat, new_lng
+                new_lat=new_lat,
+                new_lng=new_lng,
+                vehicle_id=vehicle_id,
             ).dict()
         except Vehicle.DoesNotExist:
             updated_vehicle = None

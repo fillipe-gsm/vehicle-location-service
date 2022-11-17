@@ -13,6 +13,8 @@ Given a database of existing vehicles, two functionalities are exposed here:
 - Report location: a vehicle is able to update its coordinates given an ``id``. This is implemented by the ``vehicle_location_service.gis_functions.report_new_location`` function;
 - List vehicles within a radius or an origin: The simplest approach is to query all existing vehicles, compute their distance to the origin and filter out the ones outside the provided radius. The distance is computed via a Great Circle distance implementation (in ``vehicle_location_service.distances.great_circle_distance_matrix``) and the filtering functionality is implemented by ``vehicle_location_service.gis_functions.filter_close_vehicles``.
 
+.. image:: images/step1.png
+
 Step 2
 ------
 
@@ -28,14 +30,21 @@ This is an approximation of the actual radius, but we can make a few adjustments
 
 With that, when finding the neighboring cells, we query a larger size to compensate for the geometry differences between the H3 cells and a proper circle. Finally, we compute the distance of this (hopefully) smaller set of vehicles to the origin and proceed as before.
 
+.. image:: images/step2.png
+
 Step 3
 ------
 
 The previous two functionalities were exposed in a REST API with the following endpoints.
 
+Report vehicle
+~~~~~~~~~~~~~~
+
+To update an existing vehicle, make a PUT request:
+
 .. code:: bash
 
-   POST <localhost:PORT>/vehicle
+   PUT <localhost:PORT>/vehicle
 
 with the request body of the form
 
@@ -62,6 +71,20 @@ This updates vehicle with id ``vehicle_id`` to the new coordinates, and automati
 
 with the updated vehicle.
 
+To create a new vehicle location, then use a POST request without the ``vehicle_id`` argument:
+
+.. code:: json
+
+    {
+        "lat": -23.45612,
+        "lng": -46.12370
+    }
+
+The output has the same format but with the id of the newly created vehicle.
+
+
+List close vehicles
+~~~~~~~~~~~~~~~~~~~
 
 The second endpoint finds the closest vehicles from an origin and has the form
 
@@ -92,6 +115,18 @@ The response has the form:
             ...
         ]
     }
+
+
+Bonus
+-----
+
+The suggestion is to use two databases:
+
+- A "static" one with detailed information about a vehicle that does not change very often, such as drivers info, vehicle's license plate etc. This can be any regular commercial relational database, such as PostgreSQL.
+- A "dynamic" database with very frequent writes, since the vehicles' positions are changed every few seconds. This database should hold only the information that changes often, such as the coordinates and the h3 cell of a vehicle. I suggest a cache-based structure such as Redis. It can automatically drop vehicle records that were not updated for some time (meaning they are not currently working) and there is a Geospatial version which can make the distance computations in memory as well.
+
+
+.. image:: images/bonus.png
 
 
 Development
@@ -126,3 +161,25 @@ Before publishing a new feature or opening a pull request, ensure the following:
 .. code:: bash
 
    poetry run pytest -s -v tests/
+
+
+
+Running locally
+===============
+
+First, create the database tables:
+
+.. code:: bash
+
+    poetry run python -m scripts.create_tables
+
+The database starts empty, obviously. It can be populated with POST requests or a pre-made script.
+
+Then, run the server with:
+
+.. code:: bash
+
+   poetry run python main.py
+
+
+This starts a server at ``localhost`` at port 8000 by default. It you wish to change them, update the ``settings.toml`` or with an environment variable.
