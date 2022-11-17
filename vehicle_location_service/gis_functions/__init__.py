@@ -1,2 +1,3 @@
 from .report_location import report_new_location
 from .filter_close_vehicles import filter_close_vehicles
+from .filter_close_vehicles_h3_cells import filter_close_vehicles_h3_cells
