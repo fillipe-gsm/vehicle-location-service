@@ -5,13 +5,14 @@ from vehicle_location_service.models import Vehicle
 from vehicle_location_service.gis_functions import filter_close_vehicles
 from config import settings
 
+
 @pytest.fixture
 def populate_test_database(test_database):
     vehicles = [
         Vehicle(
             lat=lat,
             lng=lng,
-            h3_cell=h3.geo_to_h3(lat, lng, settings.H3_RESOLUTION)
+            h3_cell=h3.geo_to_h3(lat, lng, settings.H3_RESOLUTION),
         )
         for lat, lng in ((0, 0), (1, 1), (2, 2), (3, 3), (4, 4))
     ]

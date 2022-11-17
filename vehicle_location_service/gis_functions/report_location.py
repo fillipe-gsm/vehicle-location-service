@@ -31,12 +31,11 @@ def report_new_location(
 
     h3_cell = h3.geo_to_h3(new_lat, new_lng, settings.H3_RESOLUTION)
     _ = (
-        Vehicle
-        .update(
+        Vehicle.update(
             {
                 Vehicle.lat: new_lat,
                 Vehicle.lng: new_lng,
-                Vehicle.h3_cell: h3_cell
+                Vehicle.h3_cell: h3_cell,
             }
         )
         .where(Vehicle.id == vehicle_id)

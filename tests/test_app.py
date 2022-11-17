@@ -13,7 +13,7 @@ def populate_test_database(test_database):
         Vehicle(
             lat=lat,
             lng=lng,
-            h3_cell=h3.geo_to_h3(lat, lng, settings.H3_RESOLUTION)
+            h3_cell=h3.geo_to_h3(lat, lng, settings.H3_RESOLUTION),
         )
         for lat, lng in ((0, 0), (1, 1), (2, 2), (3, 3), (4, 4))
     ]
@@ -29,16 +29,17 @@ def client_app():
     return TestApp(app)
 
 
-def test_report_vehicle_location(
-    client_app, populate_test_database
-):
+def test_report_vehicle_location(client_app, populate_test_database):
     response = client_app.post_json(
         "/vehicle", params={"vehicle_id": 1, "lat": 10, "lng": 10}
     )
 
     expected_response = {
         "vehicle": {
-            "id": 1, "lat": 10, "lng": 10, "h3_cell": "8858e06829fffff"
+            "id": 1,
+            "lat": 10,
+            "lng": 10,
+            "h3_cell": "8858e06829fffff",
         }
     }
 
@@ -57,12 +58,15 @@ def test_report_vehicle_location_nonexisting_vehicle(
 
 
 @pytest.mark.parametrize("method", ["regular", "h3-cells"])
-def test_get_closest_vehicles(
-    client_app, populate_test_database, method
-):
+def test_get_closest_vehicles(client_app, populate_test_database, method):
     response = client_app.get(
         "/closest-vehicles",
-        params={"origin_lat": 2, "origin_lng": 2, "radius": 5, "method": method},
+        params={
+            "origin_lat": 2,
+            "origin_lng": 2,
+            "radius": 5,
+            "method": method,
+        },
     )
 
     expected_response = {

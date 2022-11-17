@@ -2,8 +2,11 @@ import h3
 import pytest
 
 from vehicle_location_service.models import Vehicle
-from vehicle_location_service.gis_functions import filter_close_vehicles_h3_cells
+from vehicle_location_service.gis_functions import (
+    filter_close_vehicles_h3_cells,
+)
 from config import settings
+
 
 @pytest.fixture
 def populate_test_database(test_database):
@@ -11,10 +14,14 @@ def populate_test_database(test_database):
         Vehicle(
             lat=lat,
             lng=lng,
-            h3_cell=h3.geo_to_h3(lat, lng, settings.H3_RESOLUTION)
+            h3_cell=h3.geo_to_h3(lat, lng, settings.H3_RESOLUTION),
         )
         for lat, lng in (
-            (0, 0), (0.1, 0.1), (0.2, 0.2), (0.3, 0.3), (0.4, 0.4)
+            (0, 0),
+            (0.1, 0.1),
+            (0.2, 0.2),
+            (0.3, 0.3),
+            (0.4, 0.4),
         )
     ]
 
