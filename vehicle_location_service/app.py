@@ -18,9 +18,9 @@ def create_app() -> Bottle:
 
     @app.post("/vehicle")
     def vehicle_location() -> dict[str, Any]:
-        vehicle_id = request.json["vehicle_id"]
-        new_lat = request.json["lat"]
-        new_lng = request.json["lng"]
+        vehicle_id = int(request.json["vehicle_id"])
+        new_lat = float(request.json["lat"])
+        new_lng = float(request.json["lng"])
 
         try:
             updated_vehicle = report_new_location(
