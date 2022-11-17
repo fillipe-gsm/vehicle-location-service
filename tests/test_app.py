@@ -30,9 +30,7 @@ def client_app():
 
 
 class TestReportVehicleLocation:
-    def test_add_new_vehicle(
-        self, client_app, populate_test_database
-    ):
+    def test_add_new_vehicle(self, client_app, populate_test_database):
         database_len = Vehicle.select().count()
 
         response = client_app.post_json(

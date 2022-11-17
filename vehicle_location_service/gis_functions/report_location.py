@@ -50,16 +50,16 @@ def _update_existing_vehicle(
 ) -> Vehicle:
     """"""
     _ = (
-            Vehicle.update(
-                {
-                    Vehicle.lat: new_lat,
-                    Vehicle.lng: new_lng,
-                    Vehicle.h3_cell: h3_cell,
-                }
-            )
-            .where(Vehicle.id == vehicle_id)
-            .execute()
+        Vehicle.update(
+            {
+                Vehicle.lat: new_lat,
+                Vehicle.lng: new_lng,
+                Vehicle.h3_cell: h3_cell,
+            }
         )
+        .where(Vehicle.id == vehicle_id)
+        .execute()
+    )
 
     return Vehicle.get(Vehicle.id == vehicle_id)
 
