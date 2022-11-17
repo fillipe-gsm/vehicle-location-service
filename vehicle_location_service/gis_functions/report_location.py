@@ -1,25 +1,48 @@
-from pathlib import Path
+import h3
 
-from vehicle_location_service.data_types import Database, Vehicle
+from vehicle_location_service.models import Vehicle
+from vehicle_location_service.data_types import Vehicle as VehicleSerializer
+from config import settings
 
 
 def report_new_location(
-    vehicle_id: str,
+    vehicle_id: int,
     new_lat: float,
     new_lng: float,
-) -> Vehicle:
+) -> VehicleSerializer:
     """Update location of a vehicle
-    This function performs a GET-or-CREATE job: it updates the location of a
-    current vehicle or create a new one if it does not exist yet.
+
+    Parameters
+    ----------
+    vehicle_id
+        Id of the vehicle to be updated
+
+    new_lat, new_lng
+        Coordinates of the new location
+
+    Returns
+    -------
+    Updated vehicle
+
+    Raises
+    ------
+    Vehicle.DoesNotExist if no vehicle matches `vehicle_id`
     """
 
-    database = Database.load()
-
-    vehicle = database.vehicles_by_id.get(
-        vehicle_id, Vehicle(vehicle_id=vehicle_id)
+    h3_cell = h3.geo_to_h3(new_lat, new_lng, settings.H3_RESOLUTION)
+    _ = (
+        Vehicle
+        .update(
+            {
+                Vehicle.lat: new_lat,
+                Vehicle.lng: new_lng,
+                Vehicle.h3_cell: h3_cell
+            }
+        )
+        .where(Vehicle.id == vehicle_id)
+        .execute()
     )
 
-    updated_vehicle = vehicle.copy(update={"lat": new_lat, "lng": new_lng})
-    database.add(updated_vehicle)
+    updated_vehicle = Vehicle.get(Vehicle.id == vehicle_id)
 
-    return updated_vehicle
+    return updated_vehicle.serialized

@@ -1,60 +1,35 @@
-from pathlib import Path
-
+import h3
 import pytest
-from mock import patch
 
 from vehicle_location_service.gis_functions import report_new_location
-from vehicle_location_service.data_types import Database, Vehicle
+from vehicle_location_service.models import Vehicle
+from config import settings
 
 
 @pytest.fixture
-def database_file_name(tmp_path):
-    return tmp_path / "test_database.json"
+def populate_test_database(test_database):
+    vehicles = [
+        Vehicle(
+            lat=lat,
+            lng=lng,
+            h3_cell=h3.geo_to_h3(lat, lng, settings.H3_RESOLUTION)
+        )
+        for lat, lng in ((0, 0), (1, 1), (2, 2), (3, 3), (4, 4))
+    ]
+
+    with test_database.atomic():
+        Vehicle.bulk_create(vehicles)
 
 
-@pytest.fixture
-def mocked_database_path(database_file_name):
-    with patch(
-        "vehicle_location_service.data_types.database.DATABASE_PATH",
-        database_file_name,
-    ) as mocked_path:
-        yield mocked_path
+def test_update_existing_vehicle(populate_test_database):
+    updated_vehicle = report_new_location(1, 10, 10)
+
+    assert updated_vehicle.lat == 10
+    assert updated_vehicle.lng == 10
+    assert updated_vehicle.h3_cell == "8858e06829fffff"
 
 
-@pytest.fixture
-def populate_test_database(mocked_database_path):
-    vehicles_by_id = {
-        "0": Vehicle(vehicle_id="0", lat=0, lng=0),
-        "1": Vehicle(vehicle_id="1", lat=1, lng=1),
-        "2": Vehicle(vehicle_id="2", lat=2, lng=2),
-        "3": Vehicle(vehicle_id="3", lat=3, lng=3),
-        "4": Vehicle(vehicle_id="4", lat=4, lng=4),
-    }
+def test_cannot_update_non_existing_vehicle(populate_test_database):
 
-    database = Database(vehicles_by_id=vehicles_by_id)
-    database.save()
-
-
-@pytest.mark.parametrize("vehicle_id", ["0", "10"])
-def test_update_vehicle(
-    database_file_name,
-    populate_test_database,
-    mocked_database_path,
-    vehicle_id,
-):
-    """Id "0" represents an existing vehicle and "10" is from a new one
-    In both cases the data should be properly updated
-    """
-    # Given
-    expected_updated_vehicle = Vehicle(vehicle_id=vehicle_id, lat=10, lng=10)
-
-    # When
-    updated_vehicle = report_new_location(vehicle_id, 10, 10)
-
-    # Then
-    database = Database.load()
-    updated_vehicle_on_database = database.vehicles_by_id[vehicle_id]
-
-    # Check the database was updated and it returned the updated vehicle
-    assert updated_vehicle == expected_updated_vehicle
-    assert updated_vehicle_on_database == expected_updated_vehicle
+    with pytest.raises(Vehicle.DoesNotExist):
+        report_new_location(100, 10, 10)  # non-existing id

@@ -24,6 +24,7 @@ class Database(BaseModel):
     """
 
     vehicles_by_id: dict[str, Vehicle]
+    vehicles_id_by_h3_cell: dict[str, str] = {}
 
     def save(self) -> None:
         """Save data in a file"""
@@ -49,3 +50,6 @@ class Database(BaseModel):
         """Return a list of all vehicles"""
 
         return list(self.vehicles_by_id.values())
+
+    def _build_h3_lookup_table(self):
+        """Build the vehicles look-up indexed by h3 cells"""

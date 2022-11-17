@@ -1,26 +1,26 @@
-from pathlib import Path
-
+import h3
 import pytest
-from mock import patch
 
+from vehicle_location_service.models import Vehicle
 from vehicle_location_service.gis_functions import filter_close_vehicles
-
-
-@pytest.fixture
-def database_file_name():
-    return Path().cwd() / "tests/data/test_database.json"
-
+from config import settings
 
 @pytest.fixture
-def mocked_database_path(database_file_name):
-    with patch(
-        "vehicle_location_service.data_types.database.DATABASE_PATH",
-        database_file_name,
-    ) as mocked_path:
-        yield mocked_path
+def populate_test_database(test_database):
+    vehicles = [
+        Vehicle(
+            lat=lat,
+            lng=lng,
+            h3_cell=h3.geo_to_h3(lat, lng, settings.H3_RESOLUTION)
+        )
+        for lat, lng in ((0, 0), (1, 1), (2, 2), (3, 3), (4, 4))
+    ]
+
+    with test_database.atomic():
+        Vehicle.bulk_create(vehicles)
 
 
-def test_filter_close_vehicles_large_radius(mocked_database_path):
+def test_filter_close_vehicles_large_radius(populate_test_database):
     """With a large enough radius, all vehicles are selected"""
     close_vehicles = filter_close_vehicles(
         origin_lat=2,
@@ -31,7 +31,7 @@ def test_filter_close_vehicles_large_radius(mocked_database_path):
     assert len(close_vehicles) == 5
 
 
-def test_filter_close_vehicles_small_radius(mocked_database_path):
+def test_filter_close_vehicles_small_radius(populate_test_database):
     """
     In this case, only a vehicle in the same coordinate as the origin is within
     the desired radius
@@ -45,7 +45,7 @@ def test_filter_close_vehicles_small_radius(mocked_database_path):
     assert len(close_vehicles) == 1
 
 
-def test_no_close_vehicles(mocked_database_path):
+def test_no_close_vehicles(populate_test_database):
     """
     In a far origin there may be no close vehicles within the desired radius
     """

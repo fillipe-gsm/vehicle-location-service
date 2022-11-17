@@ -1,2 +1,4 @@
 DATABASE_FILE = "data/database.json"
+DATABASE_NAME = "data/database.db"
 SERVER_PORT = 8000
+H3_RESOLUTION = 8

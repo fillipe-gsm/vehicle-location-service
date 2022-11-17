@@ -1,8 +1,9 @@
 """Entrypoint to expose the API endpoints"""
 from typing import Any
 
-from bottle import Bottle, request
+from bottle import Bottle, request, response
 
+from vehicle_location_service.models import Vehicle
 from vehicle_location_service.gis_functions import (
     report_new_location,
     filter_close_vehicles,
@@ -20,9 +21,15 @@ def create_app() -> Bottle:
         new_lat = request.json["lat"]
         new_lng = request.json["lng"]
 
-        updated_vehicle = report_new_location(vehicle_id, new_lat, new_lng)
+        try:
+            updated_vehicle = report_new_location(
+                vehicle_id, new_lat, new_lng
+            ).dict()
+        except Vehicle.DoesNotExist:
+            updated_vehicle = None
+            response.status = 404
 
-        return {"vehicle": updated_vehicle.dict()}
+        return {"vehicle": updated_vehicle}
 
     @app.get("/closest-vehicles")
     def closest_vehicles() -> dict[str, Any]:
