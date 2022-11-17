@@ -128,6 +128,12 @@ The suggestion is to use two databases:
 
 .. image:: images/bonus.png
 
+To handle optimization requests in each area, the load balancer can be used to route each request to a server closer to the request region. This should reduce latency in each API call.
+
+The bottleneck is most likely in the H3 ring step, in which we find all H3 cells contained in the provided radius. If the radius is too large and/or the discretization level is too small both the neighborhood computation and the filtering of vehicles will be slow. To prevent such issues, the simplest approach is to limit the radius to an adequate value, maybe within a metropolitan zone. In addition, the H3 resolution can be better analysed. The value selected here (resolution 8, where each cell has approximately 500 m of diameter) may be too small and there may be no need to such resolution.
+
+Finally, when including a mobile client, the most significant update would be to limit the number of returned vehicles -- maybe sort them by another parameter, such as rating --, or at least add a pagination mechanism.
+
 
 Development
 ===========
