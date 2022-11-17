@@ -22,7 +22,11 @@ def populate_test_database(test_database):
 
 
 def test_update_existing_vehicle(populate_test_database):
-    updated_vehicle = report_new_location(1, 10, 10)
+    updated_vehicle = report_new_location(
+        new_lat=10,
+        new_lng=10,
+        vehicle_id=1,
+    )
 
     assert updated_vehicle.lat == 10
     assert updated_vehicle.lng == 10
@@ -32,4 +36,18 @@ def test_update_existing_vehicle(populate_test_database):
 def test_cannot_update_non_existing_vehicle(populate_test_database):
 
     with pytest.raises(Vehicle.DoesNotExist):
-        report_new_location(100, 10, 10)  # non-existing id
+        report_new_location(
+            new_lat=10,
+            new_lng=10,
+            vehicle_id=-1,
+        )  # non-existing id
+
+
+def test_create_new_vehicle(populate_test_database):
+    database_len = Vehicle.select().count()
+
+    new_vehicle = report_new_location(new_lat=10, new_lng=10)
+
+    assert new_vehicle.lat == 10
+    assert new_vehicle.lng == 10
+    assert Vehicle.select().count() == database_len + 1
