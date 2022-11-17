@@ -549,6 +549,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "types-waitress"
+version = "2.1.4.3"
+description = "Typing stubs for waitress"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "4.4.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -608,7 +616,7 @@ tests = ["PasteDeploy", "WSGIProxy2", "coverage", "pyquery", "pytest", "pytest-c
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "2e874894da989e2c698500ae64ff7c3c18625cde42d27500443cec6a690a89f3"
+content-hash = "b830a05c3d425b6c5aecd43d4652e0cbe1e6f5a599b4d9e2940faa4494d09755"
 
 [metadata.files]
 appnope = [
@@ -929,6 +937,10 @@ traitlets = [
 types-mock = [
     {file = "types-mock-4.0.15.2.tar.gz", hash = "sha256:83fe479741adb92210c3c92f006fe058297d5051e93c2cec36f1a9e0bae16e9e"},
     {file = "types_mock-4.0.15.2-py3-none-any.whl", hash = "sha256:39d489b6d9361b75448677680a3087701c0cfab61260363cfc0f646d2bf0a8b2"},
+]
+types-waitress = [
+    {file = "types-waitress-2.1.4.3.tar.gz", hash = "sha256:6c7d3a1a609b29365e8d410d44b7437b629b1ee0ec91bf9e8329cd3e7b0d1fbb"},
+    {file = "types_waitress-2.1.4.3-py3-none-any.whl", hash = "sha256:c5d9ad17613ec8757b504fce47daced71d7cc8199771aed56ff7891382e287f8"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.4.0-py3-none-any.whl", hash = "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"},
