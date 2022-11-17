@@ -7,6 +7,7 @@ from vehicle_location_service.models import Vehicle
 from vehicle_location_service.gis_functions import (
     report_new_location,
     filter_close_vehicles,
+    filter_close_vehicles_h3_cells,
 )
 
 
@@ -36,10 +37,16 @@ def create_app() -> Bottle:
         origin_lat = float(request.query.get("origin_lat"))
         origin_lng = float(request.query.get("origin_lng"))
         radius = float(request.query.get("radius"))
+        method = request.query.get("method", "h3-cells")
 
-        closest_vehicles = filter_close_vehicles(
-            origin_lat, origin_lng, radius
-        )
+        if method == "h3-cells":
+            closest_vehicles = filter_close_vehicles_h3_cells(
+                origin_lat, origin_lng, radius
+            )
+        else:
+            closest_vehicles = filter_close_vehicles(
+                origin_lat, origin_lng, radius
+            )
 
         closest_vehicles_json = [
             vehicle.dict() for vehicle in closest_vehicles

@@ -56,12 +56,13 @@ def test_report_vehicle_location_nonexisting_vehicle(
         )
 
 
+@pytest.mark.parametrize("method", ["regular", "h3-cells"])
 def test_get_closest_vehicles(
-    client_app, populate_test_database
+    client_app, populate_test_database, method
 ):
     response = client_app.get(
         "/closest-vehicles",
-        params={"origin_lat": 2, "origin_lng": 2, "radius": 5},
+        params={"origin_lat": 2, "origin_lng": 2, "radius": 5, "method": method},
     )
 
     expected_response = {
